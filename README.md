@@ -125,6 +125,35 @@ and reports itself as **Version 19.50.35730 for x64**.
 
 ---
 
+## Required VS Code Extension
+
+Only **one** extension is needed to step debug this project:
+
+| Extension | Publisher | Version | Role |
+|---|---|---|---|
+| C/C++ (`ms-vscode.cpptools`) | Microsoft | 1.32.2 | Registers the `cppvsdbg` debugger type used in `launch.json` |
+
+### Why only one
+
+The build task (`tasks.json`) uses `"type": "shell"` — a built-in VS Code task type that needs no extension. VS Code passes the command directly to `cmd.exe`. The debugger (`launch.json`) uses `"type": "cppvsdbg"`, which is registered solely by `ms-vscode.cpptools`. Remove any other extension and debugging still works; remove `ms-vscode.cpptools` and the debug session cannot start.
+
+```
+F5
+ ├── preLaunchTask  →  "type": "shell"     →  built-in VS Code     →  no extension needed
+ └── launch         →  "type": "cppvsdbg"  →  ms-vscode.cpptools   →  required
+```
+
+### Extensions that are NOT required
+
+| Extension | Why not needed |
+|---|---|
+| `vscode-solution-explorer` (Fernando Escolar) | UI panel for browsing `.sln`/`.slnx` trees — no role in building or debugging |
+| `ms-vscode.cpptools-extension-pack` | Meta-pack that installs `cpptools` + themes + CMake together; not itself functional |
+| `ms-vscode.cpptools-themes` | Syntax colour themes only |
+| `ms-vscode.cmake-tools` | CMake build integration — project uses MSBuild/`cl.exe`, not CMake |
+
+---
+
 ## Environment
 
 | Component | Details |
